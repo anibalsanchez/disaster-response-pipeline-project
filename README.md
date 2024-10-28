@@ -1,10 +1,12 @@
 # Disaster Response Pipeline Project
 
+Data-Driven Disaster Response: Smart Message Classification System.
+
 ## Introduction
 
 As a Udemy [Data Scientist](https://www.udacity.com/enrollment/nd025) Nanodegree Program student, I'm tasked with solving the **Disaster Response Pipeline Project** and publishing the results.
 
-_This project aims to revolutionize disaster response by developing an intelligent system that rapidly categorizes and routes incoming messages to appropriate relief agencies. Using advanced NLP and machine learning, it provides instant multi-category classification through a user-friendly web interface, enabling swift and efficient resource allocation. The goal is to improve disaster management effectiveness significantly, ultimately saving more lives and minimizing crisis impact through data-driven response strategies_
+_This project aims to revolutionize disaster response by developing an intelligent system that rapidly categorizes and routes incoming messages to appropriate relief agencies. Using advanced NLP and machine learning, it provides instant multi-category classification through a user-friendly web interface, enabling swift and efficient resource allocation. The goal is to significantly improve disaster management effectiveness, ultimately saving more lives and minimizing crisis impact through data-driven response strategies._
 
 ![Disaster Response Pipeline Project](images/disaster-response-pipeline-project_kelly-sikkema-_whs7FPfkwQ-unsplash.jpg)
 
@@ -29,7 +31,7 @@ The project showcases:
 
 The notebook and source code are available here:
 
-- Blog post: <https://blog.anibalhsanchez.com/en/blogging/...>
+- Blog post: <https://blog.anibalhsanchez.com/en/blogging/87-data-driven-disaster-response-smart-message-classification-system.html>
 - Repository: <https://github.com/anibalsanchez/disaster-response-pipeline-project>
 
 ## Quick Start Guide - Setup and Execution
