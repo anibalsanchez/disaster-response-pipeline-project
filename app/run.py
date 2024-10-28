@@ -15,7 +15,9 @@ app = Flask(__name__)
 
 message_pattern = r'[^a-zA-Z\s]'
 url_pattern = r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
-columns = []
+columns = ['request', 'aid_related', 'medical_help', 'food', 'shelter',
+       'other_aid', 'weather_related', 'floods', 'storm', 'earthquake',
+       'direct_report']
 
 def tokenize(text):
     lemmatizer = WordNetLemmatizer()
@@ -39,7 +41,6 @@ def index():
     # extract data needed for visuals
     Y = df.drop(['id', 'message', 'genre'], axis=1)
     total = len(Y)
-    columns = Y.columns
     category_counts = df[columns].sum()
 
     genre_counts = df.groupby('genre').count()['message']

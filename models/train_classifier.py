@@ -65,8 +65,6 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
     for i, category in enumerate(category_names):
         print(f"\n# Evaluation for {category}")
-        print(classification_report(Y_test.iloc[:, i], Y_pred[:, i]))
-
         accuracy = accuracy_score(Y_test.iloc[:, i], Y_pred[:, i])
         precision = precision_score(Y_test.iloc[:, i], Y_pred[:, i])
         recall = recall_score(Y_test.iloc[:, i], Y_pred[:, i])
