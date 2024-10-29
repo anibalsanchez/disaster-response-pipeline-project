@@ -1,4 +1,4 @@
-app/__pycache__
+*/__pycache__
 data/*.csv
 data/*.db
 models/*.pkl

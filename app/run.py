@@ -1,15 +1,19 @@
-import pickle
+import sys
+import os
 import json
 import plotly
 import pandas as pd
 
-from nltk.stem import WordNetLemmatizer
-
 from flask import Flask
-from flask import render_template, request, jsonify
+from flask import render_template, request
 from plotly.graph_objs import Bar
 from sqlalchemy import create_engine
-import re
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.abspath(os.path.join(BASE_DIR, "../models"))
+sys.path.append(MODELS_DIR)
+
+from utils import CustomModel
 
 app = Flask(__name__)
 
@@ -19,24 +23,16 @@ columns = ['request', 'aid_related', 'medical_help', 'food', 'shelter',
        'other_aid', 'weather_related', 'floods', 'storm', 'earthquake',
        'direct_report']
 
-def tokenize(text):
-    lemmatizer = WordNetLemmatizer()
-    tokens = [lemmatizer.lemmatize(token) for token in text.split()]
-    return tokens
-
-# load data
-engine = create_engine('sqlite:///../data/DisasterResponse.db')
-df = pd.read_sql_table('messages', engine)
-
-# load model
-## model = joblib.load("../models/classifier.pkl")
-with open('../models/classifier.pkl', 'rb') as file:
-    model = pickle.load(file)
+def load_df_from_db():
+    db_path = os.path.abspath(os.path.join(BASE_DIR, "../data", "DisasterResponse.db"))
+    engine = create_engine('sqlite:///'+db_path)
+    return pd.read_sql_table('messages', engine)
 
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
 def index():
+    df = load_df_from_db()
 
     # extract data needed for visuals
     Y = df.drop(['id', 'message', 'genre'], axis=1)
@@ -101,6 +97,7 @@ def go():
     query = request.args.get('query', '')
 
     # use model to predict classification for query
+    model = CustomModel.load_model()
     classification_labels = model.predict([query])[0]
     classification_results = dict(zip(columns, classification_labels))
 

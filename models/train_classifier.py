@@ -5,19 +5,13 @@ import pickle
 import warnings
 
 from datetime import datetime
-from nltk.stem import WordNetLemmatizer
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import classification_report, accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
-from sklearn.multioutput import MultiOutputClassifier
-from sklearn.pipeline import Pipeline
 from sqlalchemy import create_engine
+from utils import CustomModel
 
 warnings.filterwarnings("ignore", category=UserWarning)
-
-seed = 42
 
 def load_data(database_filepath):
     engine = create_engine('sqlite:///'+database_filepath)
@@ -25,25 +19,6 @@ def load_data(database_filepath):
     Y = df.drop(['id', 'message', 'genre'], axis=1)
 
     return df['message'], Y, Y.columns
-
-def tokenize(text):
-    lemmatizer = WordNetLemmatizer()
-    tokens = [lemmatizer.lemmatize(token) for token in text.split()]
-    return tokens
-
-def build_pipeline():
-    return Pipeline([
-        ('tfidf', TfidfVectorizer(
-            tokenizer=tokenize,
-            stop_words='english'
-        )),
-        ('clf', MultiOutputClassifier(
-            estimator=RandomForestClassifier(
-                random_state=seed,
-                class_weight='balanced'
-            )
-        ))
-    ])
 
 def build_model():
     parameters = {
@@ -54,7 +29,7 @@ def build_model():
     }
 
     return GridSearchCV(
-        build_pipeline(),
+        CustomModel.build_pipeline(),
         parameters,
         n_jobs=-1,
         verbose=2

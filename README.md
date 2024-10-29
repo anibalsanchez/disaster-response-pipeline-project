@@ -66,6 +66,27 @@ Ensure all file paths are correct before running scripts. The web app may take a
 
 ![Access the Web Interface](images/disaster-response-project-web-app.png)
 
+### Lando Container Development
+
+For convenience, the project contains the Lando development container definition in the `.lando.yml` file. To start the environment, execute:
+
+```sh
+lando start
+
+ ✔ Container disasterresponsepipelineproject_python_1  Started                                                                 0.1s
+ * Serving Flask app 'run'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:3001
+ * Running on http://192.168.96.2:3001
+Press CTRL+C to quit
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 139-837-717
+192.168.96.1 - - [29/Oct/2024 11:05:28] "GET / HTTP/1.1" 200 -
+```
+
 ## Exploring the Data
 
 To start the project, I imported the disaster messages and categories and proceeded with the ETL and cleanup.
