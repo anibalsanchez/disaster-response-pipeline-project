@@ -87,6 +87,10 @@ Press CTRL+C to quit
 192.168.96.1 - - [29/Oct/2024 11:05:28] "GET / HTTP/1.1" 200 -
 ```
 
+### Other environments
+
+The project also includes the basic configuration for Apache Python WSGI, `disaster-response-pipeline-project.wsgi`.
+
 ## Exploring the Data
 
 To start the project, I imported the disaster messages and categories and proceeded with the ETL and cleanup.
