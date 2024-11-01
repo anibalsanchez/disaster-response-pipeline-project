@@ -282,7 +282,7 @@ The **best-performing categories** are Related (Accuracy: 0.99, Precision: 1.00,
 The **worst-performing** are Offer (Precision: 0.00, Recall: 0.00), Child_alone (Precision: 0.00, Recall: 0.00), Poor performance (Precision: 0.00, Recall: 0.00) and Shops (Precision: 0.00, Recall: 0.00).
 
 **Imbalanced Data Considerations**: There are categories with **a high accuracy but low precision/recall**.
-Categories like "security", "missing_people", and "hospitals" show this pattern and suggest potential class imbalance issues.
+Categories like "fire, "security", "missing_people", and "hospitals" show this pattern and suggest potential class imbalance issues.
 
 There are categories with **zero precision and recall**. Categories like "offer", "child_alone", "tools", and "shops". It indicates severe class imbalance or a complete lack of positive examples.
 
