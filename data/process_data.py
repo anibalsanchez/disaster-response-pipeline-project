@@ -26,13 +26,20 @@ def load_data(messages_filepath, categories_filepath):
 
     return pd.merge(df_messages, df_categories, on='id')
 
-def clean_data(df):
+def remove_rows_with_all_zeros(df):
+    Y = df.drop(['id', 'message', 'genre'], axis=1)
+    final_columns = Y.columns
+    df = df.loc[~(df[final_columns] == 0).all(axis=1)]
+
+    return df
+
+def clean_data_base(df):
     df = df.drop_duplicates(subset='message', keep='first')
     df = df.reset_index(drop=True)
 
     df = df[~df['message'].str.startswith('NOTES:')]
 
-    df['message'] = df['message'].str.replace(url_pattern, '', regex=True)
+    df['message'] = df['message'].str.replace(url_pattern, 'urlplaceholder', regex=True)
     df['message'] = df['message'].str.replace(message_pattern, ' ', regex=True)
     df['message'] = df['message'].str.lower()
 
@@ -49,15 +56,18 @@ def clean_data(df):
     df.drop('original', axis=1, inplace=True)
 
     df = pd.concat([df.drop('categories', axis=1), categories_split], axis=1)
+    df = remove_rows_with_all_zeros(df)
+
+    return df
+
+def clean_data_full(df):
+    df = clean_data_base(df)
 
     ## Not enough samples, removing rows and columns
     for almost_empty_category in almost_empty_categories:
         df.drop(almost_empty_category, axis=1, inplace=True)
 
-    Y = df.drop(['id', 'message', 'genre'], axis=1)
-    final_columns = Y.columns
-
-    df = df.loc[~(df[final_columns] == 0).all(axis=1)]
+    df = remove_rows_with_all_zeros(df)
 
     return df
 
@@ -80,13 +90,11 @@ def show_value_counts(df):
 
         print("-" * 40)
 
-
 def save_data(df, database_filename):
     engine = create_engine('sqlite:///'+database_filename)
     df.to_sql('messages', con = engine, if_exists='replace', index=False)
 
     return df
-
 
 def main():
     if len(sys.argv) == 4:
@@ -98,16 +106,16 @@ def main():
         df = load_data(messages_filepath, categories_filepath)
 
         print('Cleaning data...')
-        df = clean_data(df)
+        # df = clean_data_full(df)
 
-        # show_selectivity_ratio(df)
+        # Due to the exercise scope, we are going to use only the clean_data_base function
+        # to clean the data and keep the 36 categories
+        df = clean_data_base(df)
+
         show_value_counts(df)
 
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
         save_data(df, database_filepath)
-
-        # engine = create_engine('sqlite:///'+database_filepath)
-        # display(pd.read_sql('SELECT message FROM messages', con = engine))
 
         print('Cleaned data saved to database!')
 

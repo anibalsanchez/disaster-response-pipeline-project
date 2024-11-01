@@ -9,7 +9,7 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import train_test_split
 from sqlalchemy import create_engine
-from utils import CustomModel
+from custom_model import CustomModel
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -22,10 +22,11 @@ def load_data(database_filepath):
 
 def build_model():
     parameters = {
-        'tfidf__max_features': [500, 1000, 2000, 3000],
-        'tfidf__min_df': [1, 3, 5],
-        'clf__estimator__n_estimators': [100, 200, 300, 400],
-        'clf__estimator__max_depth': [10, 20, None],
+        'tfidf__ngram_range': [(1, 1), (1, 2)],
+        'tfidf__max_features': [1000, 2000, 4000],
+        'clf__estimator__n_estimators': [100, 200, 300, 500],
+        'clf__estimator__max_depth': [10, 20],
+        'clf__estimator__class_weight': ['balanced', 'balanced_subsample'],
     }
 
     return GridSearchCV(

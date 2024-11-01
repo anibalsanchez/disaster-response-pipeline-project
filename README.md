@@ -45,11 +45,11 @@ The notebook and source code are available here:
 Run these commands in the project's root directory:
 
 - ETL Pipeline (data cleaning and database storage):
-  ```
+  ```sh
   python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db > process_data.log
   ```
 - ML Pipeline (model training and saving):
-  ```
+  ```sh
   python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl > train_classifier.log
   ```
 
@@ -87,9 +87,9 @@ Press CTRL+C to quit
 192.168.96.1 - - [29/Oct/2024 11:05:28] "GET / HTTP/1.1" 200 -
 ```
 
-### Other environments
+### Production Cloud Environments
 
-The project also includes the basic configuration for Apache Python WSGI, `disaster-response-pipeline-project.wsgi`.
+The project also includes the basic configuration for Apache Python WSGI, `disaster-response-pipeline-project.wsgi`, and the Amazon AWS AppRunner, `apprunner.yaml`. The Amazon AWS AppRunner was an attempt to run the project in this context, but it fell short due to the limited resources. The project's proper cloud configuration is a classic setup in **Amazon EC2, a c5.xlarge instance**.
 
 ## Exploring the Data
 
@@ -103,17 +103,19 @@ The process begins by reading two separate CSV files: one containing messages an
 
 ### Data Cleaning
 
-The cleaning process starts by removing duplicate messages and filtering out entries that begin with 'NOTES:' (these messages are manually identified as not related to disasters). The text of each message is then preprocessed by removing URLs and special characters and converting everything to lowercase for consistency.
-
-### Category Handling
-
-The 'categories' column initially contains multiple categories in a single string and is split into separate columns. Each category is converted from a text label to a binary value, making it easier to work with in data analysis or machine learning tasks.
+The cleaning process starts by removing duplicate messages and filtering out entries that begin with 'NOTES:' (these messages are manually identified as unrelated to disasters). The text of each message is then preprocessed by removing URLs (replacing them with a "urlplaceholder" label) and special characters and converting everything to lowercase for consistency.
 
 ### Data Restructuring
 
-Since the classification is based on the English language, the 'original' message column is eliminated. The newly created category columns are added to the primary dataset.
+Since the classification is based on the English language, the 'original' message column is eliminated.
 
-As mentioned in the project definition, the dataset is imbalanced. There are categories with few samples—for instance, the `water` column. The small number of samples of these categories cannot be used to train the model. To overcome the issue, I defined a threshold (based on the `water` column) of 0.07 to remove the columns in which the ratio is lower. Finally, The process concludes by keeping only the most relevant columns and removing any rows where all category values are zero, ensuring that each remaining entry has at least some categorization.
+#### Category Handling
+
+The 'categories' column initially contains multiple categories in a single string and is split into separate columns. Each category is converted from a text label to a binary value, making it easier to work with in data analysis or machine learning tasks. The newly created category columns are added to the primary dataset.
+
+As mentioned in the project definition, the dataset is imbalanced. There are categories with few samples—for instance, the `water` column. The small number of samples of these categories affects the model training. To test different scenarios, I defined a threshold (based on the `water` column) of 0.07 to remove the columns in which the ratio is lower and developed the routine `clean_data_full`. This process keeps only the most relevant columns and removes any rows where all category values are zero, ensuring that each remaining entry has at least some categorization.
+
+Given the exercise scope, the project trains the final model with all 36 categories using the `clean_data_base` method.
 
 ### Final Cleanup
 
@@ -121,7 +123,7 @@ This ETL process essentially transforms the data from two sources into a clean, 
 
 ## Feature set exploration
 
-This is the list of categories with meaningful data:
+This is the list of categories filtered above the 0.07 threshold:
 
 | Name |
 |------|
@@ -138,13 +140,54 @@ This is the list of categories with meaningful data:
 | earthquake |
 | direct_report |
 
+The whole list of the 36 categories are:
+
+| Name |
+|------|
+| related |
+| request |
+| offer |
+| aid_related |
+| medical_help |
+| medical_products |
+| search_and_rescue |
+| security |
+| military |
+| child_alone |
+| water |
+| food |
+| shelter |
+| clothing |
+| money |
+| missing_people |
+| refugees |
+| death |
+| other_aid |
+| infrastructure_related |
+| transport |
+| buildings |
+| electricity |
+| tools |
+| hospitals |
+| shops |
+| aid_centers |
+| other_infrastructure |
+| weather_related |
+| floods |
+| storm |
+| fire |
+| earthquake |
+| cold |
+| other_weather |
+| direct_report |
+
 ## Disaster Response Classifier
 
 The Disaster Response Classifier implements a machine-learning process for classifying disaster-related messages.
 
 The text processing processes the text by breaking it into individual words and simplifying them to their base form, **lemmatization** via WordNet Lemmatizer.
 
-The model is built using the **TF-IDF vectorization** and the **Random Forest** method to learn how to simultaneously categorize messages into multiple disaster-related categories (via the Multi-Output Classifier). To compensate the possible imbalance in the dataset, the **balanced class weight** has been activated. The parameter can help improve the model's performance on the minority classes without the need for additional data preprocessing or sampling techniques. The **Grid Search** technique optimizes the model and finds the best parameters.
+The model is built using the **TF-IDF vectorization** and the **Random Forest** method to learn how to simultaneously categorize messages into multiple disaster-related categories (via the Multi-Output Classifier). To compensate the possible imbalance in the dataset, the **balanced class weight** and the **balanced_subsample class weight** have been tested in the optimization search. The parameter can help improve the model's performance on the minority classes without the need for additional data preprocessing or sampling techniques. The **Grid Search** technique optimizes the model and finds the best parameters.
 
 Finally, the data is split into training and testing sets for evaluation. The confusion matrix and the f1 scores are produced to analyze the results.
 
@@ -152,7 +195,15 @@ The optimized model is saved for later use in the web app.
 
 ## Findings in the Disaster Response Dataset
 
-The model performs well across most categories, with accuracies ranging from 0.79 to 1.00. This indicates that the classifier is effective in categorizing disaster-related messages.
+I trained the model in the fully cleaned categories and the full list of categories. The model performs well across most categories, with accuracies ranging from 0.72 to 1.00. This indicates that the classifier is effective in categorizing disaster-related messages.
+
+The following sorted tables allow easier identification of the best and worst performing categories based on their F1-scores.
+
+- High-Performing: F1-score ≥ 0.90
+- Moderate-Performing: 0.80 ≤ F1-score < 0.90
+- Lower-Performing: F1-score < 0.80
+
+### Confusion Matrix Table For Fully Cleaned Categories
 
 | Category | Accuracy | Precision | Recall | F1-score | Performance |
 |----------|----------|-----------|--------|----------|-------------|
@@ -168,12 +219,6 @@ The model performs well across most categories, with accuracies ranging from 0.7
 | direct_report | 0.81 | 0.70 | 0.72 | 0.81 | Moderate-Performing |
 | other_aid | 0.78 | 0.56 | 0.31 | 0.75 | Lower-Performing |
 
-This sorted table allows for easier identification of the best and worst performing categories based on their F1-scores. The performance categories remain the same as before:
-
-- High-Performing: F1-score ≥ 0.90
-- Moderate-Performing: 0.80 ≤ F1-score < 0.90
-- Lower-Performing: F1-score < 0.80
-
 These are **High-Performing Categories**:
 
 - **Earthquake, Food, Storm, Floods, and Shelter**: These categories show excellent performance with F1-scores above 0.90, indicating high accuracy in identifying these specific disaster-related messages.
@@ -187,13 +232,69 @@ These are the **Lower-Performing Categories**:
 
 - **Other Aid**: This category has the lowest F1-score (0.75), indicating difficulty in accurately classifying messages related to miscellaneous aid requests.
 
-### Imbalanced Data Considerations
+**Imbalanced Data Considerations**: Several categories (e.g., Medical Help, Floods) show high accuracy but lower recall for the positive class, indicating a potential class imbalance. This suggests the model might be biased towards the majority class in these categories.
 
-Several categories (e.g., Medical Help, Floods) show high accuracy but lower recall for the positive class, indicating a potential class imbalance. This suggests the model might be biased towards the majority class in these categories.
+### Confusion Matrix Table For All 36 Categories
+
+| Category | Accuracy | Precision | Recall | F1-score | Performance |
+|----------|----------|-----------|--------|----------|-------------|
+| child_alone | 1.00 | 0.00 | 0.00 | 1.00 | High-Performing |
+| related | 0.99 | 1.00 | 1.00 | 0.99 | High-Performing |
+| offer | 0.99 | 0.00 | 0.00 | 0.99 | High-Performing |
+| tools | 0.99 | 0.00 | 0.00 | 0.99 | High-Performing |
+| shops | 0.99 | 0.00 | 0.00 | 0.99 | High-Performing |
+| missing_people | 0.99 | 0.78 | 0.22 | 0.98 | High-Performing |
+| fire | 0.99 | 0.57 | 0.15 | 0.98 | High-Performing |
+| clothing | 0.98 | 0.58 | 0.53 | 0.98 | High-Performing |
+| electricity | 0.98 | 0.59 | 0.50 | 0.98 | High-Performing |
+| hospitals | 0.98 | 0.30 | 0.18 | 0.98 | High-Performing |
+| cold | 0.98 | 0.68 | 0.54 | 0.98 | High-Performing |
+| money | 0.97 | 0.51 | 0.41 | 0.97 | High-Performing |
+| security | 0.97 | 0.27 | 0.15 | 0.97 | High-Performing |
+| aid_centers | 0.98 | 0.40 | 0.06 | 0.97 | High-Performing |
+| military | 0.96 | 0.55 | 0.63 | 0.97 | High-Performing |
+| search_and_rescue | 0.96 | 0.53 | 0.26 | 0.96 | High-Performing |
+| water | 0.96 | 0.72 | 0.82 | 0.96 | High-Performing |
+| death | 0.96 | 0.67 | 0.56 | 0.96 | High-Performing |
+| earthquake | 0.96 | 0.88 | 0.82 | 0.96 | High-Performing |
+| refugees | 0.95 | 0.41 | 0.43 | 0.95 | High-Performing |
+| transport | 0.95 | 0.51 | 0.39 | 0.95 | High-Performing |
+| food | 0.94 | 0.80 | 0.82 | 0.94 | High-Performing |
+| buildings | 0.94 | 0.56 | 0.67 | 0.94 | High-Performing |
+| storm | 0.93 | 0.70 | 0.77 | 0.94 | High-Performing |
+| medical_products | 0.93 | 0.43 | 0.50 | 0.93 | High-Performing |
+| floods | 0.93 | 0.66 | 0.72 | 0.93 | High-Performing |
+| shelter | 0.92 | 0.68 | 0.71 | 0.92 | High-Performing |
+| other_weather | 0.92 | 0.38 | 0.41 | 0.92 | High-Performing |
+| medical_help | 0.90 | 0.50 | 0.56 | 0.91 | High-Performing |
+| other_infrastructure | 0.91 | 0.27 | 0.31 | 0.92 | High-Performing |
+| request | 0.87 | 0.71 | 0.72 | 0.87 | Moderate-Performing |
+| weather_related | 0.86 | 0.85 | 0.76 | 0.86 | Moderate-Performing |
+| infrastructure_related | 0.88 | 0.33 | 0.36 | 0.88 | Moderate-Performing |
+| other_aid | 0.80 | 0.42 | 0.44 | 0.80 | Moderate-Performing |
+| direct_report | 0.81 | 0.64 | 0.67 | 0.81 | Moderate-Performing |
+| aid_related | 0.72 | 0.80 | 0.66 | 0.72 | Lower-Performing |
+
+The model shows varying performance across the 36 different categories. High accuracy scores are across most categories (>0.90 in many cases). The precision, recall, and F1-scores vary significantly between categories.
+
+The **best-performing categories** are Related (Accuracy: 0.99, Precision: 1.00, Recall: 1.00, F1: 0.99), Food (Accuracy: 0.94, Precision: 0.80, Recall: 0.82, F1: 0.94) and Earthquake Good performance (Accuracy: 0.96, Precision: 0.88, Recall: 0.82, F1: 0.96).
+
+The **worst-performing** are Offer (Precision: 0.00, Recall: 0.00), Child_alone (Precision: 0.00, Recall: 0.00), Poor performance (Precision: 0.00, Recall: 0.00) and Shops (Precision: 0.00, Recall: 0.00).
+
+**Imbalanced Data Considerations**: There are categories with **a high accuracy but low precision/recall**.
+Categories like "security", "missing_people", and "hospitals" show this pattern and suggest potential class imbalance issues.
+
+There are categories with **zero precision and recall**. Categories like "offer", "child_alone", "tools", and "shops". It indicates severe class imbalance or a complete lack of positive examples.
+
+Other categories like "aid_related" and "weather_related" show balanced metrics, suggesting a more balanced data distribution.
+
+To address class imbalance, techniques like oversampling, undersampling, or SMOTE for imbalanced categories are recommended to improve poorly performing categories. Additionally, the categories with zero precision/recall require to gather more data to overcome this issue.
+
+By addressing these issues, the model's performance can be improved across all categories, especially those currently underperforming.
 
 ## Conclusion
 
-The classifier performs well overall, especially in specific disaster types like earthquakes and storms. However, there's room for improvement in categories like "Other Aid" and in balancing precision and recall for categories with apparent class imbalance. Further analysis and potential model adjustments could enhance performance in these areas.
+The classifier performs well overall, especially in specific disaster types like earthquakes and storms. Data cleaning significantly affects the model's results. There's room for improvement in the poorly performing categories. Further analysis and potential model adjustments could enhance performance in these areas.
 
 ## LICENSE
 

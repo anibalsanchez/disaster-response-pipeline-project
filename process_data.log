@@ -14,86 +14,304 @@ Index(['related', 'request', 'offer', 'aid_related', 'medical_help',
 
 Value counts for column 'genre':
 genre
-news      0.529063
-direct    0.357794
-social    0.113144
+news      0.534478
+direct    0.360909
+social    0.104612
 Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'related':
+related
+1    0.990736
+2    0.009264
+Name: count, dtype: float64
+
+    The column 'related' data ratio is less than 0.07.
 ----------------------------------------
 
 Value counts for column 'request':
 request
-0    0.692807
-1    0.307193
+0    0.777155
+1    0.222845
 Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'offer':
+offer
+0    0.994141
+1    0.005859
+Name: count, dtype: float64
+
+    The column 'offer' data ratio is less than 0.07.
 ----------------------------------------
 
 Value counts for column 'aid_related':
 aid_related
-1    0.746997
-0    0.253003
+1    0.54189
+0    0.45811
 Name: count, dtype: float64
 ----------------------------------------
 
 Value counts for column 'medical_help':
 medical_help
-0    0.856689
-1    0.143311
+0    0.896039
+1    0.103961
+Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'medical_products':
+medical_products
+0    0.934448
+1    0.065552
+Name: count, dtype: float64
+
+    The column 'medical_products' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'search_and_rescue':
+search_and_rescue
+0    0.963794
+1    0.036206
+Name: count, dtype: float64
+
+    The column 'search_and_rescue' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'security':
+security
+0    0.976464
+1    0.023536
+Name: count, dtype: float64
+
+    The column 'security' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'military':
+military
+0    0.956983
+1    0.043017
+Name: count, dtype: float64
+
+    The column 'military' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'child_alone':
+child_alone
+0    1.0
+Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'water':
+water
+0    0.916621
+1    0.083379
 Name: count, dtype: float64
 ----------------------------------------
 
 Value counts for column 'food':
 food
-0    0.798909
-1    0.201091
+0    0.854124
+1    0.145876
 Name: count, dtype: float64
 ----------------------------------------
 
 Value counts for column 'shelter':
 shelter
-0    0.840812
-1    0.159188
+0    0.884521
+1    0.115479
 Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'clothing':
+clothing
+0    0.979769
+1    0.020231
+Name: count, dtype: float64
+
+    The column 'clothing' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'money':
+money
+0    0.969803
+1    0.030197
+Name: count, dtype: float64
+
+    The column 'money' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'missing_people':
+missing_people
+0    0.985127
+1    0.014873
+Name: count, dtype: float64
+
+    The column 'missing_people' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'refugees':
+refugees
+0    0.956232
+1    0.043768
+Name: count, dtype: float64
+
+    The column 'refugees' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'death':
+death
+0    0.940458
+1    0.059542
+Name: count, dtype: float64
+
+    The column 'death' data ratio is less than 0.07.
 ----------------------------------------
 
 Value counts for column 'other_aid':
 other_aid
-0    0.762874
-1    0.237126
+0    0.827983
+1    0.172017
 Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'infrastructure_related':
+infrastructure_related
+0    0.914618
+1    0.085382
+Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'transport':
+transport
+0    0.940007
+1    0.059993
+Name: count, dtype: float64
+
+    The column 'transport' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'buildings':
+buildings
+0    0.933397
+1    0.066603
+Name: count, dtype: float64
+
+    The column 'buildings' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'electricity':
+electricity
+0    0.973359
+1    0.026641
+Name: count, dtype: float64
+
+    The column 'electricity' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'tools':
+tools
+0    0.992038
+1    0.007962
+Name: count, dtype: float64
+
+    The column 'tools' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'hospitals':
+hospitals
+0    0.985828
+1    0.014172
+Name: count, dtype: float64
+
+    The column 'hospitals' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'shops':
+shops
+0    0.993991
+1    0.006009
+Name: count, dtype: float64
+
+    The column 'shops' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'aid_centers':
+aid_centers
+0    0.984526
+1    0.015474
+Name: count, dtype: float64
+
+    The column 'aid_centers' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'other_infrastructure':
+other_infrastructure
+0    0.942361
+1    0.057639
+Name: count, dtype: float64
+
+    The column 'other_infrastructure' data ratio is less than 0.07.
 ----------------------------------------
 
 Value counts for column 'weather_related':
 weather_related
-1    0.502347
-0    0.497653
+0    0.635585
+1    0.364415
 Name: count, dtype: float64
 ----------------------------------------
 
 Value counts for column 'floods':
 floods
-0    0.851788
-1    0.148212
+0    0.892483
+1    0.107517
 Name: count, dtype: float64
 ----------------------------------------
 
 Value counts for column 'storm':
 storm
-0    0.8317
-1    0.1683
+0    0.877911
+1    0.122089
 Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'fire':
+fire
+0    0.985878
+1    0.014122
+Name: count, dtype: float64
+
+    The column 'fire' data ratio is less than 0.07.
 ----------------------------------------
 
 Value counts for column 'earthquake':
 earthquake
-0    0.831078
-1    0.168922
+0    0.87746
+1    0.12254
 Name: count, dtype: float64
+----------------------------------------
+
+Value counts for column 'cold':
+cold
+0    0.973559
+1    0.026441
+Name: count, dtype: float64
+
+    The column 'cold' data ratio is less than 0.07.
+----------------------------------------
+
+Value counts for column 'other_weather':
+other_weather
+0    0.931093
+1    0.068907
+Name: count, dtype: float64
+
+    The column 'other_weather' data ratio is less than 0.07.
 ----------------------------------------
 
 Value counts for column 'direct_report':
 direct_report
-0    0.650904
-1    0.349096
+0    0.746757
+1    0.253243
 Name: count, dtype: float64
 ----------------------------------------
 Saving data...
